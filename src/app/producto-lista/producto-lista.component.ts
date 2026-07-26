@@ -33,6 +33,10 @@ export class ProductoListaComponent {
     this.enrutador.navigate(['editar-producto', id]);
   }
 
+  irAgregarProducto(): void {
+    this.enrutador.navigate(['/agregar-producto']);
+  }
+
   eliminarProducto(id: number): void {
     this.productoServicio.eliminarProducto(id).subscribe({
       next: () => {
