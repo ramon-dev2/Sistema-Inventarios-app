@@ -32,4 +32,15 @@ export class ProductoListaComponent {
   editarProducto(id: number): void {
     this.enrutador.navigate(['editar-producto', id]);
   }
+
+  eliminarProducto(id: number): void {
+    this.productoServicio.eliminarProducto(id).subscribe({
+      next: () => {
+        this.obtenerProductos();
+      },
+      error: (error) => {
+        console.error('Error al eliminar el producto', error);
+      }
+    });
+  }
 }
