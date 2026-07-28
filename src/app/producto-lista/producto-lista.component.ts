@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Producto } from '../producto';
@@ -10,6 +10,24 @@ import { ProductoService } from '../producto.service';
 })
 export class ProductoListaComponent {
   productos = signal<Producto[]>([]);
+  filtro = signal('');
+  productosFiltrados = computed(() => {
+    const texto = this.filtro().trim().toLowerCase();
+
+    if (!texto) {
+      return this.productos();
+    }
+
+    return this.productos().filter((producto) =>
+      [
+        producto.idProducto,
+        producto.descripcion,
+        producto.precio,
+        producto.existencia,
+        producto.activo ? 'sí activo' : 'no inactivo'
+      ].some((valor) => String(valor).toLowerCase().includes(texto))
+    );
+  });
 
   private productoServicio = inject(ProductoService);
   private enrutador = inject(Router);
@@ -35,6 +53,11 @@ export class ProductoListaComponent {
 
   irAgregarProducto(): void {
     this.enrutador.navigate(['/agregar-producto']);
+  }
+
+  actualizarFiltro(evento: Event): void {
+    const campo = evento.target as HTMLInputElement;
+    this.filtro.set(campo.value);
   }
 
   eliminarProducto(id: number): void {
